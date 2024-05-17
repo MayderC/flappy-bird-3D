@@ -38,8 +38,8 @@ export class Bird {
     console.log(model.scene);
     console.log(model);
     this.model = model.scene;
-    this.model.scale.set(4.5, 4.5, 4.5);
-    this.model.rotation.y = Math.PI / 90;
+    this.model.scale.set(1, 1, 1);
+    this.model.rotation.y = (Math.PI / 180) * 90;
     this.setShadowCaster();
 
     this.scene.add(this.model);
@@ -47,12 +47,18 @@ export class Bird {
     return this.model;
   }
 
-  public setAnimations() {
+  public setFlyAnimation() {
+    this.animationsHandler(0);
+  }
+
+  private animationsHandler(n: number) {
     if (!this.model) return;
     const animations = this.getAnimations();
     const mixer = new THREE.AnimationMixer(this.model);
 
-    const action = mixer.clipAction(animations[0]);
+    const action = mixer.clipAction(animations[n]);
+
+    action.timeScale = 1.5;
 
     const clock = new Clock();
 

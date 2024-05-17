@@ -1,18 +1,19 @@
 import {
   WebGLRenderer,
-  PCFSoftShadowMap,
   Scene,
   PlaneGeometry,
   MeshStandardMaterial,
   Mesh,
   Fog,
   AnimationClip,
+  PCFSoftShadowMap,
 } from "three";
 import { Camera } from "./Camera";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 import { SetupLights } from "./SetupLights";
 import { ANIMATION_NAMES } from "@/game/constants";
 import { Bird } from "@/game/objects/Bird";
+import { createPlane, testCube } from "@/game/objects/terrainGeneration";
 
 export class MainThree {
   public static renderer: WebGLRenderer | null = null;
@@ -27,10 +28,8 @@ export class MainThree {
     MainThree.onResize();
     if (!MainThree.renderer) return;
 
-    const bird = new Bird(fn, MainThree.scene);
-    await bird.loadBird();
-
-    bird.setAnimations();
+    MainThree.setBird(fn);
+    MainThree.sePlane();
 
     MainThree.renderer.shadowMap.enabled = true;
     MainThree.renderer.shadowMap.type = PCFSoftShadowMap;
@@ -42,16 +41,37 @@ export class MainThree {
 
     //MainThree.setFog();
     MainThree.setLights();
-    MainThree.setPlane();
+    //MainThree.setPlane();
     MainThree.setOrbitControls();
     MainThree.loop();
   }
+
+  private static sePlane() {
+    MainThree.scene.add(testCube());
+    MainThree.scene.add(createPlane());
+    MainThree.scene.add(createPlane(1));
+    MainThree.scene.add(createPlane(2));
+
+    document.addEventListener("planeDeleted", (e: Event) => {
+      MainThree.scene.remove((e as CustomEvent).detail.plane);
+      MainThree.scene.add(createPlane(2));
+      console.log("Plane deleted and new one created");
+    });
+  }
+
   private static setFog() {
     if (!MainThree.renderer) return;
     const fog = new Fog("#ff00ff", 4.5, 12.5);
 
     MainThree.scene.fog = fog;
     MainThree.renderer.setClearColor(fog.color);
+  }
+
+  private static async setBird(fn: Function) {
+    const bird = new Bird(fn, MainThree.scene);
+    await bird.loadBird();
+
+    bird.setFlyAnimation();
   }
 
   private static setLights() {
