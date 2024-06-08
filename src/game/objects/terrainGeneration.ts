@@ -1,3 +1,4 @@
+import { MainThree } from "@/three/setup/MainThree";
 import * as THREE from "three";
 
 const WIDTH = 27;
@@ -16,22 +17,24 @@ export const testCube = () => {
 };
 
 export const createPlane = (pos: number = 0) => {
-  const geometry = new THREE.PlaneGeometry(WIDTH, WIDTH / 2, 1, 1);
+  // const geometry = new THREE.PlaneGeometry(WIDTH, WIDTH / 2, 1, 1);
 
-  const material = new THREE.MeshBasicMaterial({
-    color: "#ff00ff",
-    side: THREE.DoubleSide,
-  });
+  // const material = new THREE.MeshBasicMaterial({
+  //   color: "#ff00ff",
+  //   side: THREE.DoubleSide,
+  // });
 
-  const plane = new THREE.Mesh(geometry, material);
+  // const plane = new THREE.Mesh(geometry, material);
 
-  plane.rotation.x = (Math.PI / 180) * 90;
-  plane.position.x = (WIDTH - 8) * pos;
+  const plane = new THREE.GridHelper(WIDTH, SEGMENTS, 0x0000ff, 0x808080);
+
+  plane.rotation.x = (Math.PI / 180) * 1;
+  plane.position.x = WIDTH * pos;
 
   const clock = new THREE.Clock();
   let animationFrameId: number;
   const animate = () => {
-    plane.position.x -= clock.getDelta() * 2;
+    plane.position.x -= clock.getDelta() * 4;
     animationFrameId = requestAnimationFrame(animate);
 
     if (plane.position.x < -WIDTH) {

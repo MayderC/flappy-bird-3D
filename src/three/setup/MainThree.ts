@@ -14,6 +14,7 @@ import { SetupLights } from "./SetupLights";
 import { ANIMATION_NAMES } from "@/game/constants";
 import { Bird } from "@/game/objects/Bird";
 import { createPlane, testCube } from "@/game/objects/terrainGeneration";
+import { SkyBox } from "@/game/objects/SkyBox";
 
 export class MainThree {
   public static renderer: WebGLRenderer | null = null;
@@ -28,6 +29,7 @@ export class MainThree {
     MainThree.onResize();
     if (!MainThree.renderer) return;
 
+    MainThree.setSkyBox(fn);
     MainThree.setBird(fn);
     MainThree.sePlane();
 
@@ -65,6 +67,11 @@ export class MainThree {
 
     MainThree.scene.fog = fog;
     MainThree.renderer.setClearColor(fog.color);
+  }
+
+  private static async setSkyBox(fn: Function) {
+    const skyBox = new SkyBox(fn, MainThree.scene);
+    skyBox.loadSkyBox();
   }
 
   private static async setBird(fn: Function) {
